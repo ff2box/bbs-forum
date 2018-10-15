@@ -1,6 +1,18 @@
 <template>
   <transition name="popup-fade">
     <div id="popup-box">
+      <div id="addingComent" class="boxItem" v-if="addingComment">
+        <div>
+          正在发送评论...
+        </div>
+      </div>
+
+      <div id="addingComent" class="boxItem" v-if="addCommentSucc">
+        <div>
+          评论发送成功^_^
+        </div>
+      </div>
+
       <div id="addCommentAlert" class="boxItem" v-if="emptyComment">
         <div>
           评论内容不能为空
@@ -37,6 +49,12 @@ export default {
     },
     emptyPost () {
       return this.$store.state.emptyPost
+    },
+    addingComment () {
+      return this.$store.state.addingComment
+    },
+    addCommentSucc () {
+      return this.$store.state.addCommentSucc
     }
   },
   methods: {

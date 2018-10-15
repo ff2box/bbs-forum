@@ -44,8 +44,6 @@
         <button class="btn btn-primary btn-block" @click.prevent="addCommend">评论</button>
       </form>
     </div>
-    <!-- <div id="back"><img src="@/assets/back.png" alt="back" @click='$router.back(-1)'></div>
-    <div id="toTop"><img src="@/assets/top.png" alt="back"></div> -->
   </div>
 </template>
 
@@ -105,19 +103,14 @@ export default {
       }
     },
     addCommend () {
-      // 为什么if 和 else 的都log出来了？？？？？
-      // if (this.$store.state.user.id) {
-      //   console.log('heiheihei', this.$store.state.user)
-      // } else {
-      //   console.log('你没有登录')
-      // }
-      // console.log(this.$refs.commentContent.textLength)
       if (this.$store.state.user.id) {
         if (this.$refs.commentContent.textLength === 0) {
           console.log('输入内容不能为空')
           this.$store.commit('handleEmptyComment', true)
           this.$store.commit('handleShowPopup', true)
         } else {
+          this.$store.commit('handleShowPopup', true)
+          this.$store.commit('handleAddingComment', true)
           axios.post('/api/add-comment/' + this.$route.params.id, this.addComment)
             .then(res => {
               res = res.data
@@ -127,9 +120,16 @@ export default {
               // } else
               if (res === 'no') {
                 console.log('不能只输入回车')
+                this.$store.commit('handleAddingComment', false)
                 this.$store.commit('handleEmptyComment', true)
                 this.$store.commit('handleShowPopup', true)
               } else {
+                this.$store.commit('handleAddingComment', false)
+                this.$store.commit('handleAddCommentSucc', true)
+                setTimeout(() => {
+                  this.$store.commit('handleShowPopup', false)
+                  this.$store.commit('handleAddCommentSucc', false)
+                }, 500)
                 this.comments.push(res)
                 this.addComment.content = ''
                 // this.$store.commit('showAcAlert', true)
@@ -159,6 +159,8 @@ export default {
 <style lang="stylus" scoped>
   #single-post
     padding 1rem 1.5rem 1rem
+    max-width 900px
+    margin 0 auto
     .deleteAlert
       position fixed
       z-index 999
@@ -223,19 +225,8 @@ export default {
         display inline-block
         border-color #6c757d
         margin .3rem 0
-      .btn
-        border-color #6c757d
-        background-color #fff
-        color #000
-    // #back, #toTop
-    //   position fixed
-    //   bottom 5rem
-    //   right 1.8rem
-    //   width 3rem
-    //   height 3rem
-    //   img
-    //     width 3rem
-    //     height 3rem
-    // #toTop
-    //   bottom 1rem
+      // .btn
+      //   border-color #6c757d
+      //   background-color #fff
+      //   color #000
 </style>

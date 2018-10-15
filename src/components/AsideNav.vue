@@ -47,6 +47,7 @@ export default {
   #aside-nav
     box-shadow: -1px 2px 10px 0px #00000055
     width 50%
+    max-width 300px
     position fixed
     background-color #fff
     z-index 999

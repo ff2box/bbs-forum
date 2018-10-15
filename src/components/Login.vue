@@ -125,7 +125,7 @@ export default {
             this.$store.commit('handleLoading', true)
             setTimeout(() => {
               this.$store.commit('handleLoading', false)
-              this.$router.push('/')
+              // this.$router.push('/')
             }, 1000)
           } else {
             if (res === 'captchaError') {
@@ -172,6 +172,8 @@ export default {
     right 0
     bottom 0
     z-index 999
+    display flex
+    justify-content center
     #login
       // box-shadow: 0px 4px 12px 0px #00000055
       // border-radius .6rem

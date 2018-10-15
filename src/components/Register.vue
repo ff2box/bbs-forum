@@ -138,6 +138,8 @@ export default {
     right 0
     bottom 0
     z-index 999
+    display flex
+    justify-content center
     #register
       position absolute
       top 1rem

@@ -57,6 +57,7 @@ export default {
     // border 1px solid
     box-shadow: -1px 4px 10px 0px #00000055
     width 50%
+    max-width 300px
     height 5rem
     position fixed
     background-color #fff

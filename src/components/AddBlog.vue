@@ -33,19 +33,21 @@ export default {
   },
   methods: {
     addBlog () {
+      this.$store.commit('handleLoading', true)
       axios.post('/api/add-post', this.blog)
         .then(res => {
           res = res.data
           if (res === 'nologin') {
             this.islogin = false
+            this.$store.commit('handleLoading', false)
             this.$store.commit('handleShowPopup', true)
           } else {
             this.islogin = true
             if (res === 'posterror') {
+              this.$store.commit('handleLoading', false)
               this.$store.commit('handleEmptyPost', true)
               this.$store.commit('handleShowPopup', true)
             } else {
-              this.$store.commit('handleLoading', true)
               setTimeout(() => {
                 this.$store.commit('handleLoading', false)
                 this.$router.push('/')
@@ -60,6 +62,8 @@ export default {
 
 <style lang='stylus' scoped>
   #add-blog
+    max-width 900px
+    margin 0 auto
     padding 1rem 1.6rem
     h4
       text-align center

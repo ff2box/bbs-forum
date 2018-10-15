@@ -102,7 +102,7 @@ export default {
         position fixed
         z-index 999
         left 0
-        top 3.2rem
+        top 3rem
         right 0
         bottom 0
         display flex

@@ -150,6 +150,8 @@ export default {
 
 <style lang='stylus' scoped>
   #home
+    max-width 900px
+    margin 0 auto
     #categary
       padding 1rem
       input
@@ -160,6 +162,7 @@ export default {
         margin-right .4rem
         background-color #e9e9e9
         color #000
+        cursor pointer
       input:checked + label
         background-color #17a2b8
         color #fff

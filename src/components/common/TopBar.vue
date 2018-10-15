@@ -157,7 +157,7 @@ export default {
             // border 1px solid
             box-shadow  0px 0px 10px 0px rgba(0, 0, 0, .3)
             border-radius 50%
-            background-color pink
+            cursor pointer
         ul.moreBtn
           float right
           padding-left 1rem
@@ -165,6 +165,7 @@ export default {
           li
             list-style none
             font-size 1.5rem
+            cursor pointer
       // .nav-link
       //   color #343a40
       //   font-size 1.1rem

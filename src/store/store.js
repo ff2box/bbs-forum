@@ -18,7 +18,9 @@ export const store = new Vuex.Store({
     showRegister: false,
     showMy: false,
     showAside: false,
-    showLoginUser: false
+    showLoginUser: false,
+    addingComment: false,
+    addCommentSucc: false
   },
   mutations: {
     login (state) {
@@ -68,6 +70,12 @@ export const store = new Vuex.Store({
     },
     handleShowLoginUser (state, status) {
       state.showLoginUser = status
+    },
+    handleAddingComment (state, status) {
+      state.addingComment = status
+    },
+    handleAddCommentSucc (state, status) {
+      state.addCommentSucc = status
     }
   }
 })
