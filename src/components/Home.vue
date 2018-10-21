@@ -1,5 +1,6 @@
 <template>
   <div id="home">
+    <!-- 分类 -->
     <div id='categary'>
       <input type="radio" id="all" name="categary" checked="checked">
       <label for="all" @click="showAll">全部</label>
@@ -11,6 +12,7 @@
         <router-link to="/addBlog"><span class="iconfont" style="fontWeight: 800">&#xe61e;</span> 发新主题</router-link>
       </span>
     </div>
+    <!-- 某分类没有帖子时 显示暂无主题 -->
     <span v-if="!blogs.length" style="paddingLeft: 1rem">暂无主题!</span>
     <ul class="blogs">
       <li
@@ -30,9 +32,7 @@
           </div>
           <!--标题 link to 查看详情页面 -->
           <div class="head-content">
-            <!-- <router-link :to="'/single-post/' + blog.id"> -->
             <h1 class="title">{{blog.title | snippetTitle}}</h1>
-            <!-- </router-link> -->
             <span class="blogInfo">
               {{time(blog.timestamp)}}
               <router-link :to="'/user-message/' + blog.userId" class="author">
@@ -44,9 +44,6 @@
         </div>
         <p class="content" :ref='blog.id'>
           {{blog.content | snippet}}
-          <!-- <p v-for="(p, index) in paragraphs(blog.content)" :key="index">
-            {{ p }}
-          </p> -->
         </p>
       </li>
     </ul>
@@ -67,12 +64,10 @@ export default {
     }
   },
   methods: {
-    paragraphs (content) {
-      return content.split(/\r|\n/)
-    },
     time (timestamp) {
       return new Date(timestamp).toLocaleDateString()
     },
+    // 计算对应帖子的评论数
     commentsNum (postid) {
       var nums = this.comments.filter(it => {
         return it.postId === postid
@@ -84,22 +79,49 @@ export default {
         return window.atob(avatar)
       }
     },
+    // 显示全部帖子
     showAll () {
       this.blogs = this.allBlogs
     },
+    // 显示热门帖子
     showHot () {
       this.blogs = this.allBlogs.filter(it => {
         return this.commentsNum(it.id) > 2
       })
-      // console.log('热门', this.hotBlogs)
+      // 冒泡排序 按回复数排序
+      function swap (arr, i, j) {
+        var temp = arr[i]
+        arr[i] = arr[j]
+        arr[j] = temp
+      }
+      function bubbleSort (arr, compar) {
+        var len = arr.length
+        for (var i = len - 1; i >= 0; i--) {
+          var swaped = false
+          for (var j = 0; j < i; j++) {
+            if (compar(arr[j], arr[j + 1]) > 0) {
+              swap(arr, j, j + 1)
+              swaped = true
+            }
+          }
+          if (!swaped) {
+            return arr
+          }
+        }
+        return arr
+      }
+      bubbleSort(this.blogs, (a, b) => {
+        return this.commentsNum(b.id) - this.commentsNum(a.id)
+      })
     },
+    // 显示最新一天的帖子
     showNew () {
       this.blogs = this.allBlogs.filter(it => {
         return Date.now() - it.timestamp <= 86400000
       })
     }
   },
-  // 过滤器
+  // 过滤器 当文字过多时显示'...'
   filters: {
     snippet (val) {
       val = String(val)
@@ -118,7 +140,6 @@ export default {
       }
     }
   },
-  // 生命周期钩子用 created还是mounted？
   mounted () {
     this.$store.commit('handleLoading', true)
     axios.get('/api/')
@@ -127,23 +148,12 @@ export default {
         var posts = res.data.posts
         var comments = res.data.comments
         this.allBlogs = posts.reverse()
+        this.allBlogs.sort((a, b) => {
+          return b.timestamp - a.timestamp
+        })
         this.blogs = this.allBlogs
         this.comments = comments
       })
-    // axios.get('/api/login')
-    //   .then(res => {
-    //     res = res.data
-    //     if (res === 'nologin') {
-    //       console.log('没登录呢')
-    //       console.log('logstatus111', this.$store.state.logstatus)
-    //       console.log('user', this.$store.state.user)
-    //     } else {
-    //       // this.$store.commit('login')
-    //       // this.$store.commit('loginUser', res)
-    //       console.log('logstatus', this.$store.state.logstatus)
-    //       console.log('user', this.$store.state.user)
-    //     }
-    //   })
   }
 }
 </script>

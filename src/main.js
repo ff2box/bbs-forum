@@ -6,9 +6,6 @@ import router from './router'
 import { store } from './store/store.js'
 
 import 'styles/bootstrap.min.css'
-// import 'styles/bootstrap-grid.min.css'
-// import 'styles/bootstrap-reboot.min.css'
-// import 'styles/reset.css'
 import 'styles/border.css'
 import 'styles/iconfont.css'
 

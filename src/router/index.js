@@ -6,6 +6,7 @@ import Register from '@/components/Register'
 import Login from '@/components/Login'
 import SinglePost from '@/components/SinglePost'
 import UserMessage from '@/components/UserMessage'
+import EditBlog from '@/components/EditBlog'
 
 Vue.use(Router)
 
@@ -35,6 +36,10 @@ export default new Router({
       path: '/user-message/:id',
       name: 'UserMessage',
       component: UserMessage
+    }, {
+      path: '/editBlog/:id',
+      name: 'EditBlog',
+      component: EditBlog
     }
   ]
 })

@@ -6,9 +6,7 @@
           创建新账号
         </h5>
         <form>
-          <!-- <div class="alert-success" v-if="succAlert">注册成功！正在跳转登录页面...</div> -->
           <div class="form-group">
-            <!-- <label>用户名/手机/邮箱</label> -->
             <input
               type="text"
               class="form-control"
@@ -19,7 +17,6 @@
           </div>
           <div class="alert-warning" v-if="usernameAlert">用户名已被占用！</div>
           <div class="form-group">
-            <!-- <label>密码</label> -->
             <input
               type="password"
               class="form-control"
@@ -30,7 +27,6 @@
           </div>
           <div class="alert-warning" v-if="passwordAlert">两次密码输入不一致！</div>
           <div class="form-group">
-            <!-- <label>确认密码</label> -->
             <input
               type="password"
               class="form-control"
@@ -39,7 +35,14 @@
             >
           </div>
           <div class="form-group">
-            <button ref="register" disabled='disabled' class="btn btn-primary btn-block" @click.prevent="register">注册并登陆</button>
+            <button
+              ref="register"
+              disabled='disabled'
+              class="btn btn-primary btn-block"
+              @click.prevent="register"
+            >
+              注册并登陆
+            </button>
           </div>
         </form>
       </div>
@@ -60,11 +63,12 @@ export default {
       },
       passwordAlert: false,
       usernameAlert: false,
-      succAlert: false,
       confirmPassword: ''
     }
   },
   watch: {
+    // 监视confirmPassword 如果两次输入相同则 注册按钮可点击，否则不可点击
+    // 并且提示两次输入不一致
     confirmPassword: function () {
       if (this.user.password === this.confirmPassword) {
         this.$refs.register.removeAttribute('disabled')
@@ -76,41 +80,28 @@ export default {
     }
   },
   methods: {
+    // 点击遮罩触发， 隐藏注册组件
     hiddenRegister () {
       this.$store.commit('handleShowRegister', false)
     },
     register () {
-      // 随机分配一个头像
+      // 随机分配一个头像 把相对路径转成base64格式存储
       this.user.avatar = window.btoa('../../static/avatar/' + Math.floor(Math.random() * 31 + 1) + '.jpg')
       axios.post('/api/register', this.user)
         .then(res => {
           res = res.data
+          // 用户名已被注册 则显示usrname Alert
           if (res === 'username has been registered') {
             this.usernameAlert = true
             this.passwordAlert = false
           } else {
+            // 注册成功，自动登录，将登录状态保存在vuex中
             this.usernameAlert = false
             this.passwordAlert = false
-            // 注册后直接给用户登陆
-            // axios.post('/api/login', this.user)
-            //   .then(res => {
-            //     res = res.data
-            //     console.log(res)
-            //     if (res.login === true) {
-            //       this.$store.commit('login')
-            //       this.$store.commit('loginUser', res.user)
-            //       this.loginAlert = false
-            //       this.$store.commit('handleLoading', true)
-            //       setTimeout(() => {
-            //         this.$store.commit('handleLoading', false)
-            //         this.$router.push('/')
-            //       }, 1000)
-            //     }
-            //   })
-            // this.loginAlert = false
             this.$store.commit('login')
             this.$store.commit('loginUser', res.user)
             this.$store.commit('handleShowRegister', false)
+            // 显示loading动图 路由到首页
             this.$store.commit('handleLoading', true)
             setTimeout(() => {
               this.$store.commit('handleLoading', false)

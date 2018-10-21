@@ -1,13 +1,16 @@
 <template>
   <transition name="login-fade">
+    <!-- 遮罩 -->
     <div id="cover" @click.self="hiddenLogin">
       <div class="container container-small" id="login">
+        <!-- 错误提示 -->
         <div v-if="loginAlert" class="alert alert-warning">用户名或密码错误！</div>
         <div v-if="captchaAlert" class="alert alert-warning">验证码错误！</div>
         <h5>
           登陆
           <small style="font-size: 16px">
             没有账号?
+            <!-- 点击注册 隐藏登陆组件 显示注册组件 -->
             <a @click="toRegister(), hiddenLogin()" style="color: #007bff">注册</a>
           </small>
         </h5>
@@ -34,7 +37,6 @@
           </div>
           <!-- 验证码 -->
           <div class="form-group">
-            <!-- <label>验证码</label> -->
             <div class="input-group mb-3">
               <input
                 type="text"
@@ -43,14 +45,27 @@
                 v-model='user.captcha'
                 placeholder="验证码"
               >
-              <div class="input-group-append">
-                <span class="input-group-text" id="captcha" @click='changeCaptcha' v-html="captchaData"></span>
+              <!-- 点击验证码图片可以切换 -->
+              <div class="input-group-append" style="cursor: pointer">
+                <span
+                  class="input-group-text"
+                  id="captcha"
+                  @click='changeCaptcha'
+                  v-html="captchaData"
+                >
+                </span>
               </div>
-              <!-- <img :src="captchaData" alt="captcha" @click='changeCaptcha'> -->
             </div>
           </div>
           <div class="form-group">
-            <button ref="login" disabled='disabled' class="btn btn-primary btn-block" @click.prevent='login'>登陆</button>
+            <button
+              ref="login"
+              disabled='disabled'
+              class="btn btn-primary btn-block"
+              @click.prevent='login'
+            >
+              登陆
+            </button>
           </div>
           <div class="form-group">
             <a href="#">忘记密码?</a>
@@ -78,10 +93,8 @@ export default {
       captchaData: ''
     }
   },
+  // 监视三个input的输入状态，都输入了登陆btn才可点，否则不可点击
   watch: {
-    // captchaData () {
-    //   this.captchaData
-    // },
     'user.captcha' () {
       if (this.user.username && this.user.password && this.user.captcha) {
         this.$refs.login.removeAttribute('disabled')
@@ -111,23 +124,24 @@ export default {
     toRegister () {
       this.$store.commit('handleShowRegister', true)
     },
+    // 点击登陆按钮时 像/api/login发送post请求 传一个user对象过去
     login () {
       axios.post('/api/login', this.user)
         .then(res => {
           res = res.data
           if (res.login === true) {
+            // 登陆成功 则改变vuex store里的登陆状态，其他组件可以使用这个状态
             this.$store.commit('login')
             this.$store.commit('loginUser', res.user)
-            this.user.username = ''
-            this.user.password = ''
-            this.loginAlert = false
+            // 隐藏login组件
             this.$store.commit('handleShowLogin', false)
+            // 显示loading图 1s后隐藏，营造一个正在登陆的感觉，不那么突兀
             this.$store.commit('handleLoading', true)
             setTimeout(() => {
               this.$store.commit('handleLoading', false)
-              // this.$router.push('/')
             }, 1000)
           } else {
+            // 如果登陆不成功， 判断是账号密码错误还是验证码错误 给予提示
             if (res === 'captchaError') {
               this.captchaAlert = true
             } else {
@@ -141,6 +155,7 @@ export default {
           }
         })
     },
+    // 点击验证码图片的时候重新请求一个验证码并显示
     changeCaptcha () {
       axios.get('/api/captcha')
         .then(res => {
@@ -148,6 +163,7 @@ export default {
         })
     }
   },
+  // 一旦加载就请求一个验证码
   mounted () {
     axios.get('/api/captcha')
       .then(res => {
@@ -175,10 +191,6 @@ export default {
     display flex
     justify-content center
     #login
-      // box-shadow: 0px 4px 12px 0px #00000055
-      // border-radius .6rem
-      // width 90%
-      // border 2px solid
       position absolute
       top 1rem
       z-index 1000
@@ -188,9 +200,6 @@ export default {
         border-color #6c757d
       #captcha
         padding 0
-        // border 1px solid
-        // height: 3rem
-        // margin .2rem 0
       .alert
         padding .5rem
         border-radius .3rem

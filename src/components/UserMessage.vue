@@ -24,6 +24,9 @@
             </router-link>
             <span>{{time(post.timestamp)}}</span>
           </div>
+          <!-- 编辑 编辑和删除同时出现或消失 索性v-if就用删除键的了-->
+          <button class="btn" v-if="deletePermission(post.userId)" @click="modifyPost(post.id, post.userId)" style="margin-right: .5rem">修改</button>
+          <!-- 删除 -->
           <button class="btn btn-danger" v-if="deletePermission(post.userId)" @click="deletePost(post.id, post.userId)">删除</button>
         </li>
       </ul>
@@ -154,6 +157,9 @@ export default {
       // 向后端数据库请求删除该post
       axios.post('/api/deletePost/' + postId)
         .then(res => {})
+    },
+    modifyPost (postId) {
+      this.$router.push('/editBlog/' + postId)
     }
   },
   created () {
@@ -187,6 +193,8 @@ export default {
 <style lang='stylus' scoped>
   #user-message
     padding-top 1rem
+    max-width 900px
+    margin 0 auto
     .deleteAlert
       position fixed
       z-index 999
@@ -240,6 +248,8 @@ export default {
     .h-post h6, .h-comment h6
       font-size 1.5rem
       color black
+    .h-post a, .h-comment a
+      text-decoration none
     .h-post span, .h-comment span
       color gray
     .h-post

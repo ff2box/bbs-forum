@@ -1,6 +1,13 @@
 <template>
   <div id="single-post">
-    <deleteComment-alert :commentId="commentId" class="deleteAlert" v-if="deleteCommentAlert" @deleteCommentSure='deleteCommentSure'></deleteComment-alert>
+    <!-- 删除评论提示子组件 -->
+    <deleteComment-alert
+      :commentId="commentId"
+      class="deleteAlert"
+      v-if="deleteCommentAlert"
+      @deleteCommentSure='deleteCommentSure'
+    >
+    </deleteComment-alert>
     <div class="post">
       <h1>{{blog.title}}</h1>
       <div class="postInfo">
@@ -30,9 +37,18 @@
           </div>
           <div class="item-footer">
             <router-link :to="'/user-message/' + item.userId" class="v-name">
-              <span style="color: #6c757d; font-weight: normal">{{time2(item.timestamp)}}</span> by {{item.name}}
+              <span style="color: #6c757d; font-weight: normal">
+                {{time2(item.timestamp)}}
+              </span> by {{item.name}}
             </router-link>
-            <span id="delBtn" class="btn" v-if="deletePermission(item.userId)" @click='deleteComment(item.id, item.userId)'>delete</span>
+            <span
+              id="delBtn"
+              class="btn"
+              v-if="deletePermission(item.userId)"
+              @click='deleteComment(item.id, item.userId)'
+            >
+              delete
+            </span>
           </div>
         </li>
       </ul>
@@ -40,7 +56,13 @@
     <div class="add-comment">
       <strong style="color: #17a2b8">添加一条新回复</strong>
       <form>
-        <textarea ref='commentContent' class="form-control textarea" v-model="addComment.content" placeholder="评论一下"></textarea>
+        <textarea
+          ref='commentContent'
+          class="form-control textarea"
+          v-model="addComment.content"
+          placeholder="评论一下"
+        >
+        </textarea>
         <button class="btn btn-primary btn-block" @click.prevent="addCommend">评论</button>
       </form>
     </div>
@@ -73,21 +95,24 @@ export default {
     }
   },
   methods: {
+    // 判断删除权限
     deletePermission (id) {
-      // console.log('对比了') 管理员id80 也可以显示删除按钮
       return this.$store.state.user.id === id || this.$store.state.user.id === 80
     },
     deleteComment (commentId, userId) {
-      console.log('delete')
       if (this.$store.state.user.id !== userId && this.$store.state.user.id !== 80) {
         console.log('不是本人')
       } else {
+        // 如果有权删除， 弹出删除提示，做二次确定
         this.$store.commit('deleteCommentAlert', true)
         this.commentId = commentId
       }
     },
+    // 确认删除
     deleteCommentSure (commentId) {
+      // 在前端将删除的评论过滤
       this.comments = this.comments.filter(it => it.id !== commentId)
+      // 发post请求删除指定评论
       axios.post('/api/deleteComment/' + commentId)
         .then(res => {})
     },
@@ -105,43 +130,43 @@ export default {
     addCommend () {
       if (this.$store.state.user.id) {
         if (this.$refs.commentContent.textLength === 0) {
-          console.log('输入内容不能为空')
+          // 如果输入评论为空 弹出对应提示框
           this.$store.commit('handleEmptyComment', true)
           this.$store.commit('handleShowPopup', true)
         } else {
+          // 评论按钮点击后 弹出正在发送评论 为了防止多次点击
           this.$store.commit('handleShowPopup', true)
           this.$store.commit('handleAddingComment', true)
           axios.post('/api/add-comment/' + this.$route.params.id, this.addComment)
             .then(res => {
               res = res.data
-              console.log(res)
-              // if (res === 'you are not login!') {
-              //   console.log('您没有登录')
-              // } else
               if (res === 'no') {
-                console.log('不能只输入回车')
+                // 输入的内容是空格或者回车 弹出对应提示 这里其实应该在post之前检验
                 this.$store.commit('handleAddingComment', false)
                 this.$store.commit('handleEmptyComment', true)
                 this.$store.commit('handleShowPopup', true)
               } else {
+                // 发送评论成功时 显示发送评论成功 半秒后隐藏
                 this.$store.commit('handleAddingComment', false)
                 this.$store.commit('handleAddCommentSucc', true)
                 setTimeout(() => {
                   this.$store.commit('handleShowPopup', false)
                   this.$store.commit('handleAddCommentSucc', false)
                 }, 500)
+                // 在前端把comments数组加一个刚刚评论的内容
                 this.comments.push(res)
+                // 清空评论框内容
                 this.addComment.content = ''
-                // this.$store.commit('showAcAlert', true)
               }
             })
         }
       } else {
-        console.log('您没有登录')
+        // 没有登录则弹出对应提示
         this.$store.commit('handleShowPopup', true)
       }
     }
   },
+  // 进入详情页面时，请求对应贴子数据
   created () {
     this.$store.commit('handleLoading', true)
     axios.get('/api/post/' + this.$route.params.id)
@@ -150,7 +175,6 @@ export default {
         this.blog = res.data.post
         this.paragraphs = res.data.post.content.split(/\r|\n/)
         this.comments = res.data.comments
-        console.log(this.comments)
       })
   }
 }
@@ -225,8 +249,4 @@ export default {
         display inline-block
         border-color #6c757d
         margin .3rem 0
-      // .btn
-      //   border-color #6c757d
-      //   background-color #fff
-      //   color #000
 </style>

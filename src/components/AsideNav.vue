@@ -11,31 +11,7 @@
 <script>
 import axios from 'axios'
 export default {
-  name: 'AsideNav',
-  computed: {
-    userId () {
-      return this.$store.state.user.id
-    },
-    username () {
-      return this.$store.state.user.name
-    }
-  },
-  methods: {
-    hideShowMy () {
-      this.$store.commit('handleShowMy', false)
-    },
-    logout () {
-      this.$store.commit('handleShowMy', false)
-      this.$store.commit('handlelogoutAlert', true)
-    },
-    logoutSure () {
-      axios.get('/api/logout')
-        .then(res => {
-          this.$store.commit('logout')
-          this.$router.push('/')
-        })
-    }
-  }
+  name: 'AsideNav'
 }
 </script>
 
@@ -53,9 +29,6 @@ export default {
     z-index 999
     top 3rem
     right 0
-    // display flex
-    // flex-direction column
-    // justify-content space-around
     #about
       background-color #fff
       padding .8rem .5rem

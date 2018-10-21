@@ -28,9 +28,12 @@ export default {
     }
   },
   methods: {
+    // 隐藏myMessage组件
     hideShowMy () {
       this.$store.commit('handleShowMy', false)
     },
+    // 点击登出的时候 把登出提示组件弹出 点击提示组件的确定时更改状态
+    // 触发本组件的logoutSure方法
     logout () {
       this.$store.commit('handleShowMy', false)
       this.$store.commit('handlelogoutAlert', true)
@@ -74,4 +77,5 @@ export default {
       color #919191
     #logoutBtn
       color #17a2b8
+      cursor pointer
 </style>

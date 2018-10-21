@@ -14,10 +14,21 @@
         to="/"
       >BBforum</div>
       <div class="panel">
+        <!-- 没登录显示登录按钮 登录后显示头像 -->
         <span id="btn" v-if="!logstatus">
-          <button class="iconfont" id="loginBtn" @click='showLogin'>&#xe608; 登陆</button>
+          <button
+            class="iconfont"
+            id="loginBtn"
+            @click='showLogin'
+          >
+            &#xe608; 登陆
+          </button>
         </span>
-        <span id="avatar" @click.stop="showMyToggle(), hideShowAside()" v-if="showLoginUser">
+        <span
+          id="avatar"
+          @click.stop="showMyToggle(), hideShowAside()"
+          v-if="showLoginUser"
+        >
           <img :src="avatar(userAvatar)">
         </span>
         <ul class="moreBtn" @click.stop="showAsideToggle(), hideShowMy()">
@@ -67,11 +78,11 @@ export default {
         return window.atob(avatar)
       }
     },
+    // 登出提示
     logout () {
       this.$store.commit('handlelogoutAlert', true)
-      // this.$store.commit('handleEmptyComment', false)
-      // this.$store.commit('handleEmptyPost', false)
     },
+    // 确认登出
     logoutSure () {
       axios.get('/api/logout')
         .then(res => {
@@ -166,25 +177,6 @@ export default {
             list-style none
             font-size 1.5rem
             cursor pointer
-      // .nav-link
-      //   color #343a40
-      //   font-size 1.1rem
-      //   font-weight 700
-      // .router-link-exact-active
-      //   color #fd7e14
-      // .welcome *
-      //   margin 0 .2rem
-      // .welcome
-      //   a
-      //     text-decoration none
-    // #nav-right
-    //   background-color red
-    //   display flex
-    //   justify-content center
-    //   .loginBtn
-    //     height 2rem
-    //     line-height 2rem
-    //     font-size .8rem
     #logout-alert
       position fixed
       z-index 999
