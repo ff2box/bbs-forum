@@ -130,12 +130,12 @@ export default {
     right 0
     top 0
     z-index 888
-    // background-color pink
     height 3rem
+    padding-left calc(100vw - 100%)
     .header-nav
       height 3rem
       line-height 3rem
-      width 90%
+      width 90vw
       margin 0 auto
       overflow hidden
       .nav-item

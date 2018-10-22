@@ -86,6 +86,7 @@ export default {
     body
       margin-top 3rem
       margin-bottom 2.9rem
+      padding-left calc(100vw - 100%)
     #app
       #popup-box
         position fixed
